@@ -1,49 +1,29 @@
 import firebase from 'firebase';
-import { register } from 'register-service-worker';
+
+const config = {
+  apiKey: "AIzaSyCfci93z4qo3_7P9HqYduI8jzd1wdlgOow",
+  authDomain: "awesome-vigil-226613.firebaseapp.com",
+  databaseURL: "https://awesome-vigil-226613.firebaseio.com",
+  projectId: "awesome-vigil-226613",
+  storageBucket: "awesome-vigil-226613.appspot.com",
+  messagingSenderId: "19339836108"
+};
+
+const PUBLIC_KEY = 'BCNwtwqZ83siJv6FA2yIId3V419Yc8HAfp2Tlr1UIsteHiZjBInqBWyRNdTKsPaY6HT_hVjJ4U_sW0XI5KLmbVQ';
+
 export const initializeFirebase = () => {
+  firebase.initializeApp(config);
+};
 
-  firebase.initializeApp({
-    messagingSenderId: '19339836108' // troque pelo seu sender id 
-  });
-		
-  // use other service worker
-  register('/sw.js', {
-  ready () {
-    console.log('Service worker is active.')
-  },
-  registered (registration) {
-    console.log('Service worker has been registered.')
-  },
-  cached (registration) {
-    console.log('Content has been cached for offline use.')
-  },
-  updatefound (registration) {
-    console.log('New content is downloading.')
-  },
-  updated (registration) {
-    console.log('New content is available; please refresh.')
-  },
-  offline () {
-    console.log('No internet connection found. App is running in offline mode.')
-  },
-  error (error) {
-    console.error('Error during service worker registration:', error)
-  }
-})
-	
-}
-
-export const askForPermissioToReceiveNotifications = async () => {
+export const askPermissionUser = async () => {
   try {
-
     const messaging = firebase.messaging();
-
+    messaging.usePublicVapidKey(PUBLIC_KEY);
     await messaging.requestPermission();
     const token = await messaging.getToken();
-    console.log('user token: ', token);
 
     return token;
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    console.error(err, 'err askPermissionUser');
   }
-}
+};
